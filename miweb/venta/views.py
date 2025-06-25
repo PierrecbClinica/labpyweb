@@ -132,3 +132,69 @@ def crearProducto(request):
         #No hace nada y devuelve la misma pantalla con los campos limpios
         form = CreateProductoForms()
     return render(request, 'venta/crear_producto.html', {'form' : form})
+
+#Eliminar Clientes
+def borrarCliente(request):
+    clientesEncontrados = []
+    tipoBusqueda = 'dni'
+    # dentro de las cajas
+    terminoBusqueda = ''
+    totalRegistros = 0
+
+    if request.method == 'POST':
+        #
+        if 'consultar' in request.POST:
+            #Realizar la búsqueda
+            tipoBusqueda = request.POST.get('tipoBusqueda','dni')
+            terminoBusqueda = request.POST.get('terminoBusqueda','').strip()
+            if terminoBusqueda:
+                #proceder a realizar la busqueda
+                if tipoBusqueda == 'dni':
+                    try:
+                        cliente = Cliente.objects.get(id_cliente = terminoBusqueda)
+                        clientesEncontrados = [cliente]
+                    except Cliente.DoesNotExist:
+                        messages.error(request, 'No se encontró cliente con ese DNI')
+                elif tipoBusqueda == 'nombre':
+                    clientesEncontrados = Cliente.objects.filter(
+                        #Obtiene la coincidencias
+                        apellido_Nombres__icontains = terminoBusqueda
+                    ).order_by('id_cliente')
+                    if not clientesEncontrados:
+                        messages.error(request, 'No se encontraron clientes con ese nombre')
+                totalRegistros = len(clientesEncontrados)
+                if totalRegistros > 0:
+                    messages.success(request, f'Se encontraron {totalRegistros} registro(s)')
+            else:
+                messages.error(request, 'Ingrese un término de búsqueda')
+        elif 'eliminar' in request.POST:
+            #Eliminar cliente
+            dniEliminar = request.POST.get('dniEliminar')
+            if dniEliminar:
+                try:
+                    #buscar al cliente a eliminar
+                    cliente = Cliente.objects.get(id_cliente = dniEliminar)
+                    cliente.delete()
+                    messages.success(request, f'Cliente con DNI: {dniEliminar} eliminado correctamente')
+                    #Volver a hacer la búsqueda para actualizar la lista
+                    tipoBusqueda = request.POST.get('tipoBusqueda_actual', 'dni')
+                    terminoBusqueda = request.POST.get('terminoBusqueda_actual','')
+
+                    if terminoBusqueda:
+                        if tipoBusqueda == 'dni':
+                            #Para DNI, no mostrar nada porque ya se eliminó
+                            clientesEncontrados = []
+                        elif tipoBusqueda == 'nombre':
+                            #En este caso hay que buscar nuevamente lo que queda
+                            clientesEncontrados = Cliente.objects.filter(
+                                apellidoNombres__icontains = terminoBusqueda
+                            ).order_by('id_cliente')
+                        totalRegistros = len(clientesEncontrados)
+                except Cliente.DoesNotExist:
+                    messages.error(request, 'Cliente no encontrado')
+    context = {
+        'clientesEncontrados' : clientesEncontrados,
+        'tipoBusqueda' : terminoBusqueda,
+        'totalRegistros' : totalRegistros
+    }
+    return render(request, 'venta/borrar_cliente.html')
