@@ -158,7 +158,7 @@ def borrarCliente(request):
                 elif tipoBusqueda == 'nombre':
                     clientesEncontrados = Cliente.objects.filter(
                         #Obtiene la coincidencias
-                        apellido_Nombres__icontains = terminoBusqueda
+                        apellidos_nombres__icontains = terminoBusqueda
                     ).order_by('id_cliente')
                     if not clientesEncontrados:
                         messages.error(request, 'No se encontraron clientes con ese nombre')
@@ -187,14 +187,82 @@ def borrarCliente(request):
                         elif tipoBusqueda == 'nombre':
                             #En este caso hay que buscar nuevamente lo que queda
                             clientesEncontrados = Cliente.objects.filter(
-                                apellidoNombres__icontains = terminoBusqueda
+                                apellidos_nombres__icontains = terminoBusqueda
                             ).order_by('id_cliente')
                         totalRegistros = len(clientesEncontrados)
                 except Cliente.DoesNotExist:
                     messages.error(request, 'Cliente no encontrado')
     context = {
         'clientesEncontrados' : clientesEncontrados,
-        'tipoBusqueda' : terminoBusqueda,
+        'tipoBusqueda' : tipoBusqueda,
+        'terminoBusqueda' : terminoBusqueda,
         'totalRegistros' : totalRegistros
     }
-    return render(request, 'venta/borrar_cliente.html')
+    return render(request, 'venta/borrar_cliente.html', context)
+
+#Eliminar Productos
+def borrarProducto(request):
+    productosEncontrados = []
+    tipoBusqueda = 'dni'
+    # dentro de las cajas
+    terminoBusqueda = ''
+    totalRegistros = 0
+
+    if request.method == 'POST':
+        #
+        if 'consultar' in request.POST:
+            #Realizar la búsqueda
+            tipoBusqueda = request.POST.get('tipoBusqueda','id')
+            terminoBusqueda = request.POST.get('terminoBusqueda','').strip()
+            if terminoBusqueda:
+                #proceder a realizar la busqueda
+                if tipoBusqueda == 'id':
+                    try:
+                        producto = Producto.objects.get(id_producto = terminoBusqueda)
+                        productosEncontrados = [producto]
+                    except Producto.DoesNotExist:
+                        messages.error(request, 'No se encontró producto con ese ID')
+                elif tipoBusqueda == 'nombre':
+                    productosEncontrados = Producto.objects.filter(
+                        #Obtiene la coincidencias
+                        nombre_producto__icontains = terminoBusqueda
+                    ).order_by('id_producto')
+                    if not productosEncontrados:
+                        messages.error(request, 'No se encontraron productos con ese nombre')
+                totalRegistros = len(productosEncontrados)
+                if totalRegistros > 0:
+                    messages.success(request, f'Se encontraron {totalRegistros} registro(s)')
+            else:
+                messages.error(request, 'Ingrese un término de búsqueda')
+        elif 'eliminar' in request.POST:
+            #Eliminar cliente
+            idEliminar = request.POST.get('idEliminar')
+            if idEliminar:
+                try:
+                    #buscar al cliente a eliminar
+                    producto = Producto.objects.get(id_producto = idEliminar)
+                    producto.delete()
+                    messages.success(request, f'Producto con ID: {idEliminar} eliminado correctamente')
+                    #Volver a hacer la búsqueda para actualizar la lista
+                    tipoBusqueda = request.POST.get('tipoBusqueda_actual', 'id')
+                    terminoBusqueda = request.POST.get('terminoBusqueda_actual','')
+
+                    if terminoBusqueda:
+                        if tipoBusqueda == 'id':
+                            #Para DNI, no mostrar nada porque ya se eliminó
+                            productosEncontrados = []
+                        elif tipoBusqueda == 'nombre':
+                            #En este caso hay que buscar nuevamente lo que queda
+                            productosEncontrados = Producto.objects.filter(
+                                nombre_producto__icontains = terminoBusqueda
+                            ).order_by('id_producto')
+                        totalRegistros = len(productosEncontrados)
+                except Producto.DoesNotExist:
+                    messages.error(request, 'Producto no encontrado')
+    context = {
+        'productosEncontrados' : productosEncontrados,
+        'tipoBusqueda' : tipoBusqueda,
+        'terminoBusqueda' : terminoBusqueda,
+        'totalRegistros' : totalRegistros
+    }
+    return render(request, 'venta/borrar_producto.html', context)
