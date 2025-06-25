@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ titulo }}</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ titulo }}</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID Producto</th>
+          <th>Nombre del Producto</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Activo</th>
+          <th>Fecha Vencimiento</th>
+          <th>Fecha Registro</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for producto in productos %}
+        <tr>
+          <td>{{ producto.id_producto }}</td>
+          <td>{{ producto.nombre_producto }}</td>
+          <td>{{ producto.descripcion_producto }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.stock }}</td>
+          <td>{{ producto.activo }}</td>
+          <td>{{ producto.fecha_vencimiento|date:"d/m/Y" }}</td>
+          <td>{{ producto.fecha_registro|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">No hay productos registrados</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
