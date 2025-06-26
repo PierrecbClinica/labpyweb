@@ -7,7 +7,7 @@ from .models import Cliente
 from .models import Producto
 #Importamos nuestros formularios
 from .forms import CreateClienteForms,UpdateClienteForm
-from .forms import CreateProductoForms
+from .forms import CreateProductoForms,UpdateProductoForm
 
 # consulta_clientes es la vista que muestra la lista
 def consultaClientes(request):
@@ -199,6 +199,55 @@ def borrarCliente(request):
         'totalRegistros' : totalRegistros
     }
     return render(request, 'venta/borrar_cliente.html', context)
+
+def actualizarProducto(request):
+    producto = None
+    idBuscado = None
+    form = None
+
+    if request.method == 'POST':
+        if 'buscar' in request.POST:
+            #Buscar el producto por ID
+            idBuscado = request.POST.get('id_busqueda')
+            if idBuscado:
+                #intentear considerar la busqueda del producto
+                try:
+                    #Obtener un objeto del tipo producto
+                    producto = Producto.objects.get(id_producto = idBuscado)
+                    #Crear un formulario con los datos del objeto cliente
+                    form = UpdateProductoForm(instance = producto)
+                    messages.success(request, f'Producto con ID {idBuscado} encontrado')
+                # Execpcion de cliente no existe
+                except Producto.DoesNotExist:
+                    messages.error(request, f'No se encontro Producto con ID {idBuscado}')
+            else:
+                messages.error(request, 'Ingrese un ID existente para buscar')
+        elif 'guardar' in request.POST:
+            idBuscado = request.POST.get('id_busqueda') or request.POST.get('id_producto')
+            if idBuscado:
+                try:
+                    producto = Producto.objects.get(id_producto = idBuscado)
+                    form = UpdateProductoForm(request.POST, instance=producto)
+                    if form.is_valid():
+                        form.save()
+                        messages.success(request, 'Producto actualizado correctamente')
+                        #Formulario con datos actualizados
+                        producto.refresh_from_db()
+                        #devolver al formulario
+                        form = UpdateProductoForm(instance=producto)
+                    else:
+                        messages.error(request, 'Error al actualizar los datos del formulario')
+                except Producto.DoesNotExist:
+                    messages.error(request, 'Producto no encontrado')
+            else:
+                messages.error(request, 'No se puede encontrar al Producto para actualizar')
+    context = {
+        'form':form,
+        'id_buscado':idBuscado,
+        'producto_encontrado':producto is not None,
+        'producto': producto
+    }
+    return render(request, 'venta/u_producto.html',context)
 
 #Eliminar Productos
 def borrarProducto(request):

@@ -85,3 +85,53 @@ class CreateProductoForms(forms.ModelForm):
             }
         }
     
+    #Clase para modificar un producto
+class UpdateProductoForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['id_producto', 'nombre_producto', 'descripcion_producto', 'precio', 'stock', 'activo', 'fecha_vencimiento', 'fecha_registro']
+        labels = {
+            'id_producto':'ID del Producto',
+            'nombre_producto':'Nombre del Producto',
+            'descripcion_producto':'Descripción del Producto',
+            'precio':'Precio del Producto',
+            'stock':'Stock del Producto',
+            'activo':'Activo',
+            'fecha_vencimiento':'Fecha de Vencimiento del Producto',
+            'fecha_registro':'Fecha de Registro'
+        }
+        widgets = {
+            'nombre_producto': forms.TextInput(
+                attrs={
+                    'placeholder' : 'Ingrese nombre del producto'
+                }
+            ),
+            'descripcion_producto': forms.TextInput(
+                attrs={
+                    'placeholder' : 'Ingrese descripción del producto'
+                }
+            ),
+            'precio': forms.TextInput(
+                attrs={
+                    'placeholder' : 'Ingrese precio del producto'
+                }
+            ),
+            'stock': forms.TextInput(
+                attrs={
+                    'placeholder' : 'Ingrese stock del producto'
+                }
+            ),
+            
+            'fecha_vencimiento': forms.DateInput(
+                attrs={
+                    'type':'date'
+                }, 
+                format='%Y-%m-%d'
+            ),
+            'fecha_registro' : forms.DateInput(
+                attrs={
+                    'type':'date'
+                }, 
+                format='%Y-%m-%d'
+            )
+        }
