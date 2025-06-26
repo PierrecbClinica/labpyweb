@@ -89,9 +89,8 @@ class CreateProductoForms(forms.ModelForm):
 class UpdateProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['id_producto', 'nombre_producto', 'descripcion_producto', 'precio', 'stock', 'activo', 'fecha_vencimiento', 'fecha_registro']
+        fields = ['nombre_producto', 'descripcion_producto', 'precio', 'stock', 'activo', 'fecha_vencimiento', 'fecha_registro']
         labels = {
-            'id_producto':'ID del Producto',
             'nombre_producto':'Nombre del Producto',
             'descripcion_producto':'Descripción del Producto',
             'precio':'Precio del Producto',
@@ -111,16 +110,16 @@ class UpdateProductoForm(forms.ModelForm):
                     'placeholder' : 'Ingrese descripción del producto'
                 }
             ),
-            'precio': forms.TextInput(
-                attrs={
-                    'placeholder' : 'Ingrese precio del producto'
-                }
-            ),
-            'stock': forms.TextInput(
-                attrs={
-                    'placeholder' : 'Ingrese stock del producto'
-                }
-            ),
+            # 'precio': forms.TextInput(
+            #     attrs={
+            #         'placeholder' : 'Ingrese precio del producto'
+            #     }
+            # ),
+            # 'stock': forms.TextInput(
+            #     attrs={
+            #         'placeholder' : 'Ingrese stock del producto'
+            #     }
+            # ),
             
             'fecha_vencimiento': forms.DateInput(
                 attrs={
