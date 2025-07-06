@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminar Cliente</title>
+    <title>Eliminar Detalle de Venta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -206,7 +206,7 @@
 <body>
     <div class="container">
         <div class="header-section">
-            <h1>Eliminar Cliente</h1>
+            <h1>Eliminar Detalle de Venta</h1>
             <a href="/" class="btn-exit">Salir</a>
         </div>
         
@@ -231,18 +231,10 @@
                     <label>
                         <input type="radio" 
                                name="tipoBusqueda" 
-                               value="dni" 
-                               {% if tipoBusqueda == 'dni' %}checked{% endif %}
+                               value="id" 
+                               {% if tipoBusqueda == 'id' %}checked{% endif %}
                                onchange="cambiarTipoBusqueda()">
-                        Por DNI
-                    </label>
-                    <label>
-                        <input type="radio" 
-                               name="tipoBusqueda" 
-                               value="nombre" 
-                               {% if tipoBusqueda == 'nombre' %}checked{% endif %}
-                               onchange="cambiarTipoBusqueda()">
-                        Por Apellidos y Nombres
+                        Por ID
                     </label>
                 </div>
                 
@@ -262,29 +254,33 @@
         </div>
 
         <!-- Sección de resultados -->
-        {% if clientesEncontrados %}
+        {% if ventasEncontradas %}
         <div class="results-section">
             <table class="results-table">
                 <thead>
                     <tr>
-                        <th>DNI</th>
-                        <th>Apellidos y Nombres</th>
-                        <th>Fecha Registro</th>
-                        <th>Fecha Sistema</th>
+                        <th>id detalleVenta</th>
+                        <th>Id Venta</th>
+                        <th>Id Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>subTotal</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cliente in clientesEncontrados %}
+                    {% for venta in ventasEncontradas %}
                     <tr>
-                        <td>{{ cliente.id_cliente }}</td>
-                        <td>{{ cliente.apellidos_nombres }}</td>
-                        <td>{{ cliente.fecha_registro|date:"d/m/Y" }}</td>
-                        <td>{{ cliente.fecha_sistema|date:"d/m/Y H:i" }}</td>
+                        <td>{{ venta.id_detalleVenta }}</td>
+                        <td>{{ venta.id_venta }}</td>
+                        <td>{{ venta.id_producto }}</td>
+                        <td>{{ venta.cantidad }}</td>
+                        <td>{{ venta.precio }}</td>
+                        <td>{{ venta.subTotal }}</td>
                         <td>
                             <button type="button" 
                                     class="btn-delete" 
-                                    onclick="confirmarEliminacion('{{ cliente.id_cliente }}')">
+                                    onclick="confirmarEliminacion('{{ venta.id_detalleVenta }}')">
                                 Eliminar
                             </button>
                         </td>
@@ -305,10 +301,10 @@
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-message" id="modalMessage">
-                ¿Desea eliminar el Cliente con DNI XXXXXX?
+                ¿Desea eliminar el Detalle de Venta con ID XXXXXX?
             </div>
             <div class="modal-buttons">
-                <button class="btn-yes" onclick="eliminarCliente()">SÍ</button>
+                <button class="btn-yes" onclick="eliminarVenta()">SÍ</button>
                 <button class="btn-no" onclick="cerrarModal()">NO</button>
             </div>
         </div>
@@ -318,13 +314,13 @@
     <form id="deleteForm" method="post" style="display: none;">
         {% csrf_token %}
         <input type="hidden" name="eliminar" value="1">
-        <input type="hidden" name="dniEliminar" id="dniEliminar">
+        <input type="hidden" name="idEliminar" id="idEliminar">
         <input type="hidden" name="tipoBusqueda_actual" value="{{ tipoBusqueda }}">
         <input type="hidden" name="terminoBusqueda_actual" value="{{ terminoBusqueda }}">
     </form>
 
     <script>
-        let dniAEliminar = '';
+        let idAEliminar = '';
         
         function cambiarTipoBusqueda() {
             // Limpiar el campo de búsqueda cuando cambia el tipo
@@ -334,30 +330,27 @@
             const tipoBusqueda = document.querySelector('input[name="tipoBusqueda"]:checked').value;
             const inputBusqueda = document.getElementById('terminoBusqueda');
             
-            if (tipoBusqueda === 'dni') {
-                inputBusqueda.placeholder = 'Ingrese DNI del cliente';
+            if (tipoBusqueda === 'id') {
+                inputBusqueda.placeholder = 'Ingrese ID del detalle de venta';
                 inputBusqueda.maxLength = 8;
-            } else {
-                inputBusqueda.placeholder = 'Ingrese apellidos y nombres';
-                inputBusqueda.maxLength = 80;
             }
         }
         
-        function confirmarEliminacion(dni) {
-            dniAEliminar = dni;
+        function confirmarEliminacion(id) {
+            idAEliminar = id;
             document.getElementById('modalMessage').textContent = 
-                `¿Desea eliminar el Cliente con DNI ${dni}?`;
+                `¿Desea eliminar el detalle venta con ID ${id}?`;
             document.getElementById('modalOverlay').style.display = 'block';
         }
         
-        function eliminarCliente() {
-            document.getElementById('dniEliminar').value = dniAEliminar;
+        function eliminarVenta() {
+            document.getElementById('idEliminar').value = idAEliminar;
             document.getElementById('deleteForm').submit();
         }
         
         function cerrarModal() {
             document.getElementById('modalOverlay').style.display = 'none';
-            dniAEliminar = '';
+            idAEliminar = '';
         }
         
         // Cerrar modal al hacer clic en el overlay

@@ -16,7 +16,8 @@ class Cliente(models.Model):
     fecha_sistema = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'\nNombres: {self.apellidos_nombres},\n DNI: {self.id_cliente}'
+        # return f'\nNombres: {self.apellidos_nombres},\n DNI: {self.id_cliente}'
+        return f'\n{self.id_cliente}'
 
 '''
     Crear el modelo Producto
@@ -41,9 +42,33 @@ class Producto(models.Model):
     fecha_registro = models.DateTimeField()
 
     def __str__(self):
-        return f'\nID_Producto: {self.id_producto}, Producto: {self.nombre_producto}, Precio:{self.precio}, Stock: {self.stock}, Fecha Vencimiento {self.fecha_vencimiento} '
+        # return f'\nID_Producto: {self.id_producto}, Producto: {self.nombre_producto}, Precio:{self.precio}, Stock: {self.stock}, Fecha Vencimiento {self.fecha_vencimiento} '
+        return f'\n{self.id_producto}'
     
 '''
     Captura de la imagen de la tabla Producto en el Admin
     Enviar la captura por el chat grupal
 '''
+
+class Venta(models.Model):
+    id_venta = models.AutoField(primary_key=True)
+    id_cliente = models.ForeignKey('Cliente',on_delete=models.SET_NULL,null=True)
+    # id_detalleVenta = models.ForeignKey('DetallesVenta',on_delete=models.SET_NULL,null=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_registro = models.DateField()
+
+    def __str__(self):
+        # return f'\nCodigo Venta: {self.id_venta}, DNI Cliente: {self.id_cliente}, Total:{self.total}'
+        return f'\n{self.id_venta}'
+
+class DetallesVenta(models.Model):
+    id_detalleVenta = models.AutoField(primary_key=True)
+    id_venta = models.ForeignKey('Venta',on_delete=models.SET_NULL,null=True)
+    id_producto = models.ForeignKey('Producto',on_delete=models.SET_NULL,null=True)
+    cantidad = models.IntegerField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    subTotal = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'\nCodigo Detalle Venta: {self.id_detalleVenta}, Codigo Venta: {self.id_venta}, ID_Producto:{self.id_producto}, cantidad: {self.cantidad}, precio: {self.precio}, Subtotal {self.subTotal} '
+        

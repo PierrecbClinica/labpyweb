@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Cliente</title>
+    <title>Registro de Detalle de Venta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -132,7 +132,7 @@
 <body>
     <div class="container">
         <div class="header-section">
-            <h1>Registro de Cliente</h1>
+            <h1>Registro de Detalle de Venta</h1>
             <a href="/" class="btn-exit">Salir</a>
         </div>
         
@@ -144,65 +144,51 @@
 
         <form method="post">
             {% csrf_token %}
-            
+
             <div class="form-group">
-                {{ form.id_cliente.label_tag }}
-                {{ form.id_cliente }}
-                {% if form.id_cliente.errors %}
-                    <div class="error">{{ form.id_cliente.errors }}</div>
+                {{ form2.id_venta.label_tag }}
+                {{ form2.id_venta }}
+                {% if form2.id_venta.errors %}
+                    <div class="error">{{ form2.id_venta.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form2.id_producto.label_tag }}
+                {{ form2.id_producto }}
+                {% if form2.id_producto.errors %}
+                    <div class="error">{{ form2.id_producto.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form2.cantidad.label_tag }}
+                {{ form2.cantidad }}
+                {% if form2.cantidad.errors %}
+                    <div class="error">{{ form2.cantidad.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form2.precio.label_tag }}
+                {{ form2.precio }}
+                {% if form2.precio.errors %}
+                    <div class="error">{{ form2.precio.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form2.subTotal.label_tag }}
+                {{ form2.subTotal }}
+                {% if form2.subTotal.errors %}
+                    <div class="error">{{ form2.subTotal.errors }}</div>
                 {% endif %}
             </div>
             
-            <div class="form-group">
-                {{ form.apellidos_nombres.label_tag }}
-                {{ form.apellidos_nombres }}
-                {% if form.apellidos_nombres.errors %}
-                    <div class="error">{{ form.apellidos_nombres.errors }}</div>
-                {% endif %}
-            </div>
+            <button type="submit">Guardar Detalle de Venta</button>
             
-            <div class="form-group">
-                {{ form.fecha_registro.label_tag }}
-                {{ form.fecha_registro }}
-                {% if form.fecha_registro.errors %}
-                    <div class="error">{{ form.fecha_registro.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <button type="submit">Guardar Cliente</button>
         </form>
     </div>
-    
-    <!-- Caja de diálogo para DNI duplicado -->
-    <div id="dialogOverlay" class="dialog-overlay">
-        <div class="dialog-box">
-            <div class="dialog-message">
-                DNI de cliente ya existe, no se puede guardar la información
-            </div>
-            <button class="dialog-button" onclick="closeDialog()">Aceptar</button>
-        </div>
-    </div>
 
-    <script>
-        // Mostrar el diálogo si hay DNI duplicado
-        {% if dni_duplicado %}
-            document.getElementById('dialogOverlay').style.display = 'block';
-        {% endif %}
-        
-        // Función para cerrar el diálogo
-        function closeDialog() {
-            document.getElementById('dialogOverlay').style.display = 'none';
-            // Limpiar el campo DNI para que el usuario pueda corregirlo
-            document.getElementById('id_id_cliente').value = '';
-            document.getElementById('id_id_cliente').focus();
-        }
-        
-        // Cerrar diálogo al hacer clic en el overlay
-        document.getElementById('dialogOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDialog();
-            }
-        });
-    </script>
 </body>
 </html>

@@ -167,40 +167,51 @@
 
         <div class="table-container">
             <div class="table-header">
-                <h2>📋 Registro de Clientes del Sistema</h2>
+                <h2>📋 Registro de Ventas del Sistema</h2>
             </div>
             <div class="table-content">
                 <table>
                     <thead>
                         <tr>
-                            <th>🆔 DNI</th>
-                            <th>👤 Apellidos y Nombres</th>
+                            <th>🆔 ID Ventas</th>
+                            <th>👤 DNI cliente</th>
+                            <th>📋 Total</th>
                             <th>📅 Fecha Registro</th>
-                            <th>⏰ Fecha Sistema</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for cliente in clientes %}
+                        {% for venta in ventas %}
                         <tr>
-                            <td><strong>{{ cliente.id_cliente }}</strong></td>
-                            <td>{{ cliente.apellidos_nombres }}</td>
-                            <td>{{ cliente.fecha_registro|date:"d/m/Y" }}</td>
-                            <td>{{ cliente.fecha_sistema|date:"d/m/Y H:i" }}</td>
+                            <td><strong>{{ venta.id_venta }}</strong></td>
+                            <td>{{ venta.id_cliente }}</td>
+                            <td>{{ venta.total }}</td>
+                            {% for detalleVenta in detalleVentas %}
+                            <tr>
+                                {% if venta.id_venta == detalleVenta.id_venta %}
+                                    <td><strong>{{ detalleVenta.id_detalleVenta }}</strong></td>
+                                    <td>{{ detalleVenta.id_producto }}</td>
+                                    <td>{{ detalleVenta.cantidad }}</td>
+                                    <td>{{ detalleVenta.precio }}</td>
+                                    <td>{{ detalleVenta.subTotal }}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            <td>{{ venta.fecha_registro|date:"d/m/Y" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="4" class="empty-state">
-                                📭 No hay clientes registrados en el sistema
+                                📭 No hay ventas registradas en el sistema
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 
-                {% if clientes %}
+                {% if ventas %}
                 <div class="stats-section">
                     <p class="stats-text">
-                        📊 Total de clientes registrados: {{ clientes|length }}
+                        📊 Total de ventas registrados: {{ ventas|length }}
                     </p>
                 </div>
                 {% endif %}

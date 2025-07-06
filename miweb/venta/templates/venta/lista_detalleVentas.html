@@ -167,40 +167,45 @@
 
         <div class="table-container">
             <div class="table-header">
-                <h2>📋 Registro de Clientes del Sistema</h2>
+                <h2>📋 Registro de Detalle de Ventas del Sistema</h2>
             </div>
             <div class="table-content">
                 <table>
                     <thead>
                         <tr>
-                            <th>🆔 DNI</th>
-                            <th>👤 Apellidos y Nombres</th>
-                            <th>📅 Fecha Registro</th>
-                            <th>⏰ Fecha Sistema</th>
+                            <th>🆔 ID Detalle de Ventas</th>
+                            <th>👤 ID Venta</th>
+                            <th>👤 ID Producto</th>
+                            <th>📋 Cantidad</th>
+                            <th>📋 Precio</th>
+                            <th>📋 subTotal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for cliente in clientes %}
+                        {% for detalleVenta in detalleVentas %}
                         <tr>
-                            <td><strong>{{ cliente.id_cliente }}</strong></td>
-                            <td>{{ cliente.apellidos_nombres }}</td>
-                            <td>{{ cliente.fecha_registro|date:"d/m/Y" }}</td>
-                            <td>{{ cliente.fecha_sistema|date:"d/m/Y H:i" }}</td>
+                            <td><strong>{{ detalleVenta.id_detalleVenta }}</strong></td>
+                            <td>{{ detalleVenta.id_venta }}</td>
+                            <td>{{ detalleVenta.id_venta }}</td>
+                            <td>{{ detalleVenta.id_producto }}</td>
+                            <td>{{ detalleVenta.cantidad }}</td>
+                            <td>{{ detalleVenta.precio }}</td>
+                            <td>{{ detalleVenta.subTotal }}</td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="4" class="empty-state">
-                                📭 No hay clientes registrados en el sistema
+                                📭 No hay Detalle de ventas registradas en el sistema
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 
-                {% if clientes %}
+                {% if detalleVentas %}
                 <div class="stats-section">
                     <p class="stats-text">
-                        📊 Total de clientes registrados: {{ clientes|length }}
+                        📊 Total de Detalle de ventas registrados: {{ detalleVentas|length }}
                     </p>
                 </div>
                 {% endif %}
